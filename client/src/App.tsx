@@ -28,7 +28,7 @@ function App() {
 
       <p className="mt-3 text-gray-600">My first full-stack application.</p>
 
-      <p className="mt-4 text-sm text-green-700">Backend status: {status}</p>
+      <p className="mt-4 text-sm text-red-700">Backend status: {status}</p>
     </div>
   );
 }
