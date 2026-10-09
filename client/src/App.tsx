@@ -1,14 +1,18 @@
 import { useEffect, useState } from "react";
+import { BrowserRouter, Routes, Route } from "react-router";
+import Home from "./pages/Home";
+import Trips from "./pages/Trips";
+import Navbar from "./components/Navbar";
 
-// App is the main React component for the MiniTrip frontend.
 function App() {
-  // Store the backend health status so the UI can show loading, success, or error.
+  // Store the backend health status so React updates the UI when it changes.
   const [status, setStatus] = useState<string>("Loading...");
 
-  // Check the backend health endpoint as soon as the component loads.
+  // Check backend availability when the application first mounts.
   useEffect(() => {
     fetch("/api/health")
       .then((response) => {
+        // fetch() does not reject automatically for HTTP error responses.
         if (!response.ok) {
           throw new Error(`HTTP error: ${response.status}`);
         }
@@ -23,13 +27,29 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-200 p-8">
-      <h1 className="text-4xl font-bold text-blue-600">MiniTrip</h1>
+    // BrowserRouter enables client-side navigation using the browser's URL.
+    <BrowserRouter>
+      <div className="min-h-screen bg-slate-200 p-8">
+        
+        {/* Display the navigation shared by all pages. */}
+        <Navbar />
 
-      <p className="mt-3 text-gray-600">My first full-stack application.</p>
+        {/* Match the browser URL to the corresponding page component. */}
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/trips" element={<Trips />} />
+        </Routes>
 
-      <p className="mt-4 text-sm text-red-700">Backend status: {status}</p>
-    </div>
+        {/* Outside Routes so backend status remains visible on every page. */}
+        <p
+          className={`mt-6 text-sm ${
+            status === "ok" ? "text-green-700" : "text-red-700"
+          }`}
+        >
+          Backend status: {status}
+        </p>
+      </div>
+    </BrowserRouter>
   );
 }
 
